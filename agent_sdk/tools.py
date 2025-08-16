@@ -14,25 +14,40 @@ class Tool:
     def execute(self, query):
         return self.func(query)
 
+
 # Echo tool
 def echo_tool(query):
     return f"Echo: {query}"
 
 echo = Tool("EchoTool", "echo", echo_tool)
 
+
 # Calculator tool
 def calculator_tool(query):
     try:
         expression = query.lower().replace("calculate", "").strip()
-        result = eval(expression)
-        return f"Result: {result}"
+        # safe eval using only numbers and operators
+        allowed_chars = "0123456789+-*/(). "
+        if all(char in allowed_chars for char in expression):
+            result = eval(expression)
+            return f"Result: {result}"
+        else:
+            return "Error: Invalid characters in expression."
     except Exception as e:
         return f"Error: {str(e)}"
 
 calculator = Tool("CalculatorTool", "calculate", calculator_tool)
 
+
 # Greeting tool
 def greeting_tool(query):
-    return "Hi there! I'm your AI Agent. How can I help you today?"
+    return "Hello! How can I help you today?"
 
 greeting = Tool("GreetingTool", ["hi", "hello", "hey", "salam"], greeting_tool)
+
+
+# Exit tool
+def exit_tool(query):
+    return "Goodbye! Exiting..."
+
+exit_tool_instance = Tool("ExitTool", ["bye", "khudahafiz", "exit", "quit"], exit_tool)
